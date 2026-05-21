@@ -1,0 +1,15 @@
+git rebase origin/main
+
+git pull origin main
+
+git status
+
+git add .
+
+git commit -m "dizer oque fez"
+
+git fetch origin
+
+git rebase origin/main
+
+git push -u origin main
