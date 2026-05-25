@@ -9,16 +9,18 @@ public class Senha {
 
     public Senha(char tipo) {
         this.tipo = tipo;
-        this.numero = (tipo == 'N') ? contadorNormal++ : contadorPrioridade++;
+        if (tipo == 'N') {
+            this.numero = contadorNormal++;
+        } else {
+            this.numero = contadorPrioridade++;
+        }
     }
 
     public int getNumero() { return numero; }
     public char getTipo() { return tipo; }
-    public String getIdentificador() { return tipo + String.valueOf(numero); }
 
-    public static void resetarContadores() {
-        contadorNormal = 1;
-        contadorPrioridade = 1;
+    public String getIdentificador() {
+        return String.valueOf(tipo) + numero;
     }
 
     @Override

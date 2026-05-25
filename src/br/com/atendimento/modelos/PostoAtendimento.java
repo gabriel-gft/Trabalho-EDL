@@ -22,7 +22,12 @@ public class PostoAtendimento {
 
     public String getStatus() {
         if (!ativo) return "Inativo";
-        return senhaEmAtendimento == null ? "Livre" : "Ocupado";
+
+        if (senhaEmAtendimento == null) {
+            return "Livre";
+        } else {
+            return "Ocupado";
+        }
     }
 
     @Override
