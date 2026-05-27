@@ -1,5 +1,3 @@
-git rebase origin/main
-
 git pull origin main
 
 git status
