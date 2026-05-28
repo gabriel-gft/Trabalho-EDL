@@ -107,6 +107,7 @@ public class SistemaAtendimentoMain {
             pausar(1600);
 
             //CONDICAO DE ENCERRAMENTO ANTECIPADO APOS METADE DAS ITERACOES
+            //SO VERIFICA A PARTIR DA METADE PARA GARANTIR TEMPO MINIMO DE SIMULACAO
             if (iter >= MAX_ITERACOES / 2 && g.filaEPostosVazios()) {
                 cls();
                 desenharCena(g, iter);
@@ -116,6 +117,25 @@ public class SistemaAtendimentoMain {
                 pausar(600);
                 break;
             }
+        }
+
+        //SE O LOOP ENCERROU POR LIMITE DE ITERACOES COM POSTOS AINDA OCUPADOS,
+        //DRENA OS ATENDIMENTOS EM CURSO ATE QUE TODOS OS POSTOS FIQUEM LIVRES
+        //ASSIM O RELATORIO FINAL CONTEM TODOS OS ATENDIMENTOS, SEM EXCECAO
+        //NAO CHAMA NOVAS SENHAS DA FILA: APENAS ESGOTA QUEM JA ESTAVA SENDO ATENDIDO
+        if (!g.todosPostosLivresOuInativos()) {
+            cls();
+            p("");
+            p(AMARELO + BOLD + "  >>> Limite de " + MAX_ITERACOES
+                    + " iteracoes atingido. Finalizando atendimentos em curso..." + RESET);
+            p("");
+            pausar(600);
+            while (!g.todosPostosLivresOuInativos()) {
+                g.finalizarAtendimentos();
+                pausar(400);
+            }
+            p(VERDE + "  >>> Todos os postos liberados." + RESET);
+            pausar(500);
         }
 
         //ENCERRAMENTO FINAL

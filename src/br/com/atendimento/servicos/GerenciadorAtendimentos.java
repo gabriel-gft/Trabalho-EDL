@@ -115,23 +115,16 @@ public class GerenciadorAtendimentos {
     public boolean chamarProximaSenha() {
         int idx = encontrarIndicePostoLivre();
         if (idx == -1) return false;
-
         Pessoa pessoa = selecionarProximaPessoa();
         if (pessoa == null) return false;
-
         pessoaNoPosto[idx] = pessoa;
         postos[idx].atender(pessoa.getSenha());
         ultimaPessoaChamada = pessoa;
         ultimoPostoChamado  = postos[idx].getId();
-
-        // EMPILHA AQUI: Garante que a ordem no relatorio final sera estritamente
-        // a ordem em que as senhas foram chamadas para atendimento, refletindo a regra 2N:1P.
-        pessoasAtendidas.empilhar(pessoa);
-
         return true;
     }
 
-    //LOGICA: PRECEDENCIA ESTRITA PRIORITARIA (CICLO P -> N1 -> N2)
+    //PRIORITARIA (CICLO P -> N1 -> N2)
     private Pessoa selecionarProximaPessoa(){
         boolean temPrioridade = !filaPrioritaria.estaVazia();
         boolean temNormal = !filaNormal.estaVazia();
@@ -171,12 +164,17 @@ public class GerenciadorAtendimentos {
             PostoAtendimento posto = postos[i];
             if (!posto.isAtivo() || posto.isLivre()) continue;
 
-            // Simulacao de duracao de atendimento aleatoria
+            //SIMULACAO DE DURACAO DE ATENDIMENTO ALEATORIA
             if (random.nextDouble() > 0.45 && random.nextDouble() > 0.3) {
-                // O registro historico não acontece mais aqui para não embaralhar a lista
+                Pessoa pessoa = pessoaNoPosto[i];
+                //EMPILHA AQUI: SOMENTE QUANDO O ATENDIMENTO REALMENTE TERMINA
+                //GARANTE QUE TOTALATENDIDAS E O TAMANHO DA PILHA SEMPRE COINCIDAM
+                pessoasAtendidas.empilhar(pessoa);
                 pessoaNoPosto[i] = null;
                 posto.liberar();
-                totalAtendidas++; // Apenas computa que o atendimento terminou
+                totalAtendidas++;
+                System.out.printf("  OK Posto %d finalizou: %s (Senha %s).%n",
+                        posto.getId(), pessoa.getNome(), pessoa.getSenha());
             }
         }
     }
@@ -301,7 +299,7 @@ public class GerenciadorAtendimentos {
         if (pessoasAtendidas.estaVazia()) {
             System.out.println("  Nenhuma pessoa foi atendida.");
         } else {
-            // O totalAtendidas e usado apenas como base numerica correta de ID.
+            //TOTALATENDIDAS E IGUAL AO TAMANHO DA PILHA: AMBOS CONTAM APENAS FINALIZADOS
             int posicao = totalAtendidas;
             while (!pessoasAtendidas.estaVazia()) {
                 Pessoa p = pessoasAtendidas.desempilhar();
@@ -321,6 +319,15 @@ public class GerenciadorAtendimentos {
             if (posto.isAtivo() && !posto.isLivre()) return false;
         }
 
+        return true;
+    }
+
+    //RETORNA TRUE SE TODOS OS POSTOS ATIVOS ESTAO LIVRES, INDEPENDENTE DA FILA
+    //USADO PARA DRENAR OS ATENDIMENTOS EM CURSO APOS O LIMITE DE ITERACOES SER ATINGIDO
+    public boolean todosPostosLivresOuInativos() {
+        for (PostoAtendimento posto : postos) {
+            if (posto.isAtivo() && !posto.isLivre()) return false;
+        }
         return true;
     }
 
