@@ -11,14 +11,33 @@ public class PostoAtendimento {
         this.senhaEmAtendimento = null;
     }
 
-    public int getId() { return id; }
-    public boolean isAtivo() { return ativo; }
-    public void setAtivo(boolean ativo) { this.ativo = ativo; }
-    public boolean isLivre() { return ativo && senhaEmAtendimento == null; }
-    public Senha getSenhaEmAtendimento() { return senhaEmAtendimento; }
+    public int getId() {
+        return id;
+    }
 
-    public void atender(Senha senha) { this.senhaEmAtendimento = senha; }
-    public void liberar() { this.senhaEmAtendimento = null; }
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    public boolean isLivre() {
+        return ativo && senhaEmAtendimento == null;
+    }
+
+    public Senha getSenhaEmAtendimento() {
+        return senhaEmAtendimento;
+    }
+
+    public void atender(Senha senha) {
+        this.senhaEmAtendimento = senha;
+    }
+
+    public void liberar() {
+        this.senhaEmAtendimento = null;
+    }
 
     public String getStatus() {
         if (!ativo) return "Inativo";

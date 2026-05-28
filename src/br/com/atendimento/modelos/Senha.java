@@ -16,13 +16,19 @@ public class Senha {
         }
     }
 
-    public int getNumero() { return numero; }
-    public char getTipo() { return tipo; }
+    public int getNumero() {
+        return numero;
+    }
+
+    public char getTipo() {
+        return tipo;
+    }
 
     public String getIdentificador() {
         return String.valueOf(tipo) + numero;
     }
 
     @Override
-    public String toString() { return getIdentificador(); }
+    public String toString() {
+        return getIdentificador(); }
 }
